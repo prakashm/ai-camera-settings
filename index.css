@@ -1,0 +1,6 @@
+/* Default CSS for AI Camera Settings Generator */
+body {
+  background: var(--background-primary, #111827);
+  color: var(--text-primary, #f9fafb);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}

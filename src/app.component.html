@@ -50,11 +50,17 @@
 
   <!-- API Key Input -->
   <section class="mb-8 w-full max-w-2xl mx-auto p-4 bg-[rgb(var(--background-secondary-rgb))]/60 rounded-lg shadow-md flex flex-col items-center">
-    <label for="apiKeyInput" class="block text-lg font-semibold mb-2 text-[var(--text-secondary)]">Google Gemini API Key</label>
+    <label for="providerSelect" class="block text-lg font-semibold mb-2 text-[var(--text-secondary)]">Select API Provider</label>
+    <select id="providerSelect" class="w-full px-4 py-2 mb-4 border rounded-md bg-[rgb(var(--background-tertiary-rgb))] text-[var(--text-primary)]" [(ngModel)]="selectedProvider" (change)="onProviderChange($event)">
+      <option value="google">Google Gemini</option>
+      <option value="openai">OpenAI</option>
+      <option value="other">Other</option>
+    </select>
+    <label for="apiKeyInput" class="block text-lg font-semibold mb-2 text-[var(--text-secondary)]">{{ providerLabel() }}</label>
     <input id="apiKeyInput" type="password" autocomplete="off"
            [value]="apiKey()"
            (input)="onApiKeyInput($event)"
-           placeholder="Enter your Gemini API key"
+           [placeholder]="providerPlaceholder()"
            class="w-full px-4 py-2 bg-[rgb(var(--background-tertiary-rgb))] border rounded-md focus:outline-none focus:ring-2 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/70 transition-colors mb-2"
            [class.border-[var(--border-primary-rgb))]]="!apiKeyError()"
            [class.focus:ring-[var(--accent-focus)]]="!apiKeyError()"

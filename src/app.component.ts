@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { GeminiService, CameraSettings } from './services/gemini.service';
 
 interface Scene {
@@ -20,24 +21,52 @@ interface Theme {
   templateUrl: './app.component.html',
   styleUrls: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
 })
 export class AppComponent {
   private readonly geminiService = inject(GeminiService);
+
+  // API Provider selection
+  selectedProvider = 'google';
 
   // API Key state
   readonly apiKey = signal('');
   readonly apiKeyError = signal<string|null>(null);
   readonly apiKeySaved = signal(false);
 
+  providerLabel(): string {
+    switch (this.selectedProvider) {
+      case 'google': return 'Google Gemini API Key';
+      case 'openai': return 'OpenAI API Key';
+      default: return 'API Key';
+    }
+  }
+
+  providerPlaceholder(): string {
+    switch (this.selectedProvider) {
+      case 'google': return 'Enter your Gemini API key';
+      case 'openai': return 'Enter your OpenAI API key';
+      default: return 'Enter your API key';
+    }
+  }
+
+  onProviderChange(event: Event): void {
+    this.selectedProvider = (event.target as HTMLSelectElement).value;
+    this.apiKey.set('');
+    this.apiKeyError.set(null);
+    this.apiKeySaved.set(false);
+  }
+
   onApiKeyInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value.trim();
     this.apiKey.set(value);
-    // Basic validation: must start with 'AIza' and be at least 30 chars
+    // Provider-specific validation
     if (!value) {
       this.apiKeyError.set('API key is required.');
-    } else if (!/^AIza[0-9A-Za-z-_]{30,}$/.test(value)) {
-      this.apiKeyError.set('Invalid API key format.');
+    } else if (this.selectedProvider === 'google' && !/^AIza[0-9A-Za-z-_]{30,}$/.test(value)) {
+      this.apiKeyError.set('Invalid Google Gemini API key format.');
+    } else if (this.selectedProvider === 'openai' && !/^sk-[A-Za-z0-9-]{20,300}$/.test(value)) {
+      this.apiKeyError.set('Invalid OpenAI API key format.');
     } else {
       this.apiKeyError.set(null);
     }
@@ -46,7 +75,7 @@ export class AppComponent {
 
   saveApiKey(): void {
     if (!this.apiKeyError() && this.apiKey()) {
-      this.geminiService.setApiKey(this.apiKey());
+      this.geminiService.setApiKey(this.apiKey(), this.selectedProvider);
       this.apiKeySaved.set(true);
     }
   }
@@ -247,6 +276,8 @@ export class AppComponent {
     this.loading.set(true);
     this.imageLoading.set(true);
 
+    // Always set the latest API key and provider before making requests
+    this.geminiService.setApiKey(this.apiKey(), this.selectedProvider);
     const settingsPromise = this.geminiService.generateCameraSettings(scene.name, this.cameraBrand(), this.cameraModel());
     const imagesPromise = this.geminiService.generateExampleImages(scene.name);
 

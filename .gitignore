@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.angular
+.cache
+coverage
+build
+tmp
+temp

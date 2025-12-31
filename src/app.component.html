@@ -66,11 +66,17 @@
            [class.focus:ring-[var(--accent-focus)]]="!apiKeyError()"
            [class.border-[var(--error)]]="apiKeyError()"
            [class.focus:ring-[var(--error)]]="apiKeyError()">
-    <button (click)="saveApiKey()"
-            class="mt-2 px-6 py-2 bg-[var(--accent-primary)] text-[var(--accent-button-text)] rounded-md font-semibold shadow hover:bg-[var(--accent-focus)] transition-colors"
-            [disabled]="!apiKey() || !!apiKeyError()">
-      Save API Key
-    </button>
+    <div class="flex gap-3 mt-2">
+      <button (click)="saveApiKey()"
+              class="px-6 py-2 bg-[var(--accent-primary)] text-[var(--accent-button-text)] rounded-md font-semibold shadow hover:bg-[var(--accent-focus)] transition-colors"
+              [disabled]="!apiKey() || !!apiKeyError()">
+        Save API Key
+      </button>
+      <button (click)="resetApiKey()"
+              class="px-6 py-2 bg-[var(--background-hover-rgb)] text-[var(--text-secondary)] rounded-md font-semibold shadow hover:bg-[var(--error)] hover:text-white transition-colors border border-[var(--border-primary-rgb)]">
+        Reset
+      </button>
+    </div>
     <p *ngIf="apiKeyError()" class="mt-2 text-sm text-[var(--error)] animate-fast-fade-in">{{ apiKeyError() }}</p>
   </section>
 
@@ -144,6 +150,7 @@
       <a href="mailto:contact@camerai.app" class="hover:text-[var(--text-primary)] transition-colors">Contact Us</a>
       <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--text-primary)] transition-colors">Terms (MIT License)</a>
       <a href="#" class="hover:text-[var(--text-primary)] transition-colors">Privacy Policy</a>
+      <span class="block text-xs text-[var(--text-secondary)]">Author: <a href="https://prakashm.com" target="_blank" rel="noopener noreferrer" class="underline hover:text-[var(--accent-primary)]">prakashm.com</a></span>
     </div>
     <p>&copy; {{ currentYear }} AI Camera Settings Generator. All Rights Reserved.</p>
   </footer>

@@ -24,6 +24,11 @@ interface Theme {
   imports: [CommonModule, FormsModule],
 })
 export class AppComponent {
+    resetApiKey(): void {
+      this.apiKey.set('');
+      this.apiKeyError.set(null);
+      this.apiKeySaved.set(false);
+    }
   private readonly geminiService = inject(GeminiService);
 
   // API Provider selection
